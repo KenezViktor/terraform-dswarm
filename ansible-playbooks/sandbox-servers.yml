@@ -1,0 +1,4 @@
+---
+- hosts: sandbox-servers
+  roles:
+    - sandbox

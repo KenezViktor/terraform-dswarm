@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# vars
+LIBVIRT_DIR="/var/lib/libvirt/images"
+IMAGE_NAME="debian-12-genericcloud-amd64.qcow2"
+SOURCE_URL="https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2"
+SIZE="10G"
+
+# download the debian amd64 cloudimage
+wget -O $LIBVIRT_DIR/$IMAGE_NAME "$SOURCE_URL"
+qemu-img resize $LIBVIRT_DIR/$IMAGE_NAME $SIZE

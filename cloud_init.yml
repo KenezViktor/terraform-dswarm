@@ -1,0 +1,21 @@
+#cloud-config
+
+# root related setting
+# passwd, enable root over ssh, copy ssh pubkey
+chpasswd:
+  list: |
+     root:linux
+  expire: False
+disable_root: False
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC9wpNOpcKN2M0YkUoZwyIozeyIC9IVMAu9AEtfrQ4aW7DocAAnt4QmAsm+5PgsraepIins//BmCKmnAFpjVn2ggeDT3x1csN2h9NPl5SWjFNfUHx9M+eJo2jQvjVWghl1F9oPrslR0lZsN0caolQ1V5mZqv5wvK1XShRwBlbvoeGYSRUaFYyluk9CI7U53Vm4sNVlomwoaw1ShnLj9kQ7nBqje1lL1B8MWqWnWM2NxhS1sv6z5wT5A6kYwS9dG2hKa5lxVaoYyHuwNmpIfiYkRMQCJzeKyrFV68ymOWOY58JvEBpqswWVxboet9kBT+MZHPtMcr7SeXVXB3WRKDOJqD/8rxKc4KY+sORX0pRqyLIIy2fe3QmbbEoLNvDEZWeUFFJrz+O9ayoot9whuJ5AoA/eRn5JoOrLd+bk6HcyeViTGPKs7r52ZTujd2pLWDz7pUSk8EiUa6KfsFzY/H1vNED0y7tqqnaiPgVaJcS9+I5T2gfK3oHRlaX1JeEtMB+s= kenezviktor@kenezviktor-home
+        
+# update package manager's list
+package_update: True
+package_upgrade: True # upgrade avaiable packages
+# install packages
+packages:
+  - python3-dns
+  - vim
+  - net-tools
+  - dnsutils
