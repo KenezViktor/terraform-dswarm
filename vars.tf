@@ -2,7 +2,7 @@
 variable "image" {
   #source = "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2"
   #default = "/var/lib/libvirt/images/debian-12-genericcloud-amd64.qcow2"
-  default = "/var/lib/libvirt/images/bookworm-packer"
+  default = "/var/lib/libvirt/images/base-debian"
   description = "Source of the Debian image"
 }
 
@@ -14,6 +14,11 @@ variable "number_of_workers" {
 
 variable "number_of_managers" {
   default = 3
+  description = "The number of how many manager servers do we need"
+}
+
+variable "number_of_storages" {
+  default = 1
   description = "The number of how many manager servers do we need"
 }
 
@@ -31,6 +36,12 @@ variable "manager_subdomain" {
   default = "manager-"
   description = "Generic subdomain for worker VMs"
 }
+
+variable "storage_subdomain" {
+  default = "storage-"
+  description = "Generic subdomain for worker VMs"
+}
+
 
 # Network related vars
 variable "swarm-network" {

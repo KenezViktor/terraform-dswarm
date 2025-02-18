@@ -1,20 +1,20 @@
 resource "libvirt_volume" "manager-qcow2" {
   count = var.number_of_managers
-  name = "debian-12-manager-${count.index}.qcow2"
+  name = "debian-12-manager-${count.index + 1}.qcow2"
   pool = "default"
   source = var.image
   format = "qcow2"
 }
 resource "libvirt_domain" "manager" {
   count = var.number_of_managers
-  name = join("", [var.manager_subdomain, count.index, var.domain_name])
+  name = join("", [var.manager_subdomain, count.index + 1, var.domain_name])
   memory = 2048
   vcpu = 2
 
   network_interface {
-    network_id = libvirt_network.manager.id
-    hostname = join("", [var.manager_subdomain, count.index, var.domain_name])
-    addresses = [ join("", [var.manager-network.ipv4, (count.index + 100)]) ]
+    network_id = libvirt_network.swarm.id
+    hostname = join("", [var.manager_subdomain, count.index + 1, var.domain_name])
+    addresses = [ join("", [var.swarm-network.ipv4, (count.index + 101)]) ]
   }
 
   disk {
@@ -33,7 +33,7 @@ resource "libvirt_domain" "manager" {
     autoport = true
   }
 
-  depends_on = [ libvirt_network.manager ]
+  depends_on = [ libvirt_network.swarm ]
 }
 
 # wait until VMs become ready
@@ -42,17 +42,17 @@ resource "terraform_data" "manager-up" {
 
   # deletes old hostkey
   provisioner "local-exec" {
-    command = "ssh-keygen -f ~/.ssh/known_hosts -R ${join("", [var.manager_subdomain, count.index, var.domain_name])}"
+    command = "ssh-keygen -f ~/.ssh/known_hosts -R ${join("", [var.manager_subdomain, count.index + 1, var.domain_name])}"
   }
 
   # waits util ssh becomes ready
   provisioner "local-exec" {
-    command = "until nc -zv ${join("", [var.manager_subdomain, count.index, var.domain_name])} 22; do sleep 15; done"
+    command = "until nc -zv ${join("", [var.manager_subdomain, count.index + 1, var.domain_name])} 22; do sleep 15; done"
   }
 
   # adds new ssh hostkeys
   provisioner "local-exec" {
-    command = "ssh-keyscan -t rsa -H ${join("", [var.manager_subdomain, count.index, var.domain_name])} >> ~/.ssh/known_hosts"
+    command = "ssh-keyscan -t rsa -H ${join("", [var.manager_subdomain, count.index + 1, var.domain_name])} >> ~/.ssh/known_hosts"
   }
 
   depends_on = [ libvirt_domain.manager ]
