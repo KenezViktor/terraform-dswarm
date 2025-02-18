@@ -1,0 +1,34 @@
+---
+- name: "Setup NFS server"
+  hosts: storage-servers
+  roles:
+    - storage
+
+- name: "Install basic softwares, tools and dependencies"
+  hosts: manager-servers, worker-servers
+  roles:
+    - base
+
+- name: "Join managers to cluster"
+  hosts: manager-servers
+  roles:
+    - managers
+
+- name: "Join workers to cluster"
+  hosts: worker-servers
+  roles:
+    - workers
+
+#- name: "Deploy stacks"
+#  hosts: manager[0]
+#  roles:
+#    - deploy
+
+- name: "Cleanup"
+  hosts: manager-servers, worker-servers
+  tasks:
+    - name: "Prune containers, networks, volumes"
+      community.docker.docker_prune:
+        containers: true
+        networks: true
+        volumes: true

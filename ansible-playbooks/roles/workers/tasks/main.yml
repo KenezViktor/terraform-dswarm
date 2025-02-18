@@ -1,0 +1,8 @@
+---
+- name: "Join worker nodes"
+  community.docker.docker_swarm:
+    state: join
+    timeout: 60
+    remote_addrs:
+      - "{{ groups['manager-servers'][0] }}"
+    join_token: "{{ hostvars[groups['manager-servers'][0]]['output']['swarm_facts']['JoinTokens']['Worker'] }}"

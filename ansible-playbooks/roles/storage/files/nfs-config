@@ -1,0 +1,1 @@
+/shared 192.168.150.0/24(rw,sync,no_root_squash,no_subtree_check)

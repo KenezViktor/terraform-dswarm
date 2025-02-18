@@ -1,0 +1,51 @@
+---
+- name: "Set hostname"
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: "Install NFS common"
+  ansible.builtin.apt:
+    name: nfs-common
+    state: present
+
+- name: "Ensure shared dir exists"
+  ansible.builtin.file:
+    path: "/shared/"
+    state: directory
+    mode: "0755"
+
+- name: "Mount NFS Share"
+  ansible.posix.mount:
+    src: "{{ groups['storage-servers'][0] }}:/shared/"
+    path: "/shared/"
+    opts: rw
+    state: mounted
+    fstype: nfs
+
+- name: "Install curl"
+  ansible.builtin.apt:
+    name: curl
+    state: present
+
+- name: "Check if docker is installed"
+  ansible.builtin.stat:
+    path: "/usr/bin/docker"
+  register: result
+
+- name: "Get docker install script"
+  ansible.builtin.get_url:
+    url: 'https://get.docker.com/'
+    dest: "/tmp/get-docker.sh"
+    mode: "0744"
+  when: not result.stat.exists
+
+- name: "Run docker install script"
+  ansible.builtin.shell:
+    cmd: "/tmp/get-docker.sh"
+  when: not result.stat.exists
+  notify: "Start docker service"
+
+- name: "Install python3-docker"
+  ansible.builtin.apt:
+    name: python3-docker
+    state: present

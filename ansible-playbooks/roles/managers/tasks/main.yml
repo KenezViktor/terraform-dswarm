@@ -1,0 +1,25 @@
+---
+- name: "Install jsondiff"
+  ansible.builtin.apt:
+    name: python3-jsondiff
+    state: present
+
+- name: "Install passlib"
+  ansible.builtin.apt:
+    name: python3-passlib
+    state: present
+
+- name: "Init cluster"
+  community.docker.docker_swarm:
+    state: present
+  register: output
+  when: inventory_hostname in groups['manager-servers'][0]
+
+- name: "Join manager nodes"
+  community.docker.docker_swarm:
+    state: join
+    timeout: 60
+    remote_addrs:
+      - "{{ groups['manager-servers'][0] }}"
+    join_token: "{{ hostvars[groups['manager-servers'][0]]['output']['swarm_facts']['JoinTokens']['Manager'] }}"
+  when: inventory_hostname not in groups['manager-servers'][0]
