@@ -14,13 +14,32 @@
     state: directory
     mode: "0755"
 
-- name: "Mount NFS Share"
+- name: "Mount NFS Share for Managers"
   ansible.posix.mount:
     src: "{{ groups['storage-servers'][0] }}:/shared/"
     path: "/shared/"
     opts: rw
     state: mounted
     fstype: nfs
+  when: inventory_hostname in groups['manager-servers']
+
+- name: "Mount NFS Share for Workers"
+  ansible.posix.mount:
+    src: "{{ groups['storage-servers'][0] }}:/storage/{{ inventory_hostname }}"
+    path: "/storage"
+    opts: rw
+    state: mounted
+    fstype: nfs
+  when: inventory_hostname in groups['worker-servers']
+
+- name: "Mount NFS Share for Workers - cert"
+  ansible.posix.mount:
+    src: "{{ groups['storage-servers'][0] }}:/storage/cert"
+    path: "/storage/cert"
+    opts: rw
+    state: mounted
+    fstype: nfs
+  when: inventory_hostname in groups['worker-servers']
 
 - name: "Install curl"
   ansible.builtin.apt:

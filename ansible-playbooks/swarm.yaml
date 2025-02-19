@@ -19,16 +19,12 @@
   roles:
     - workers
 
-#- name: "Deploy stacks"
-#  hosts: manager[0]
-#  roles:
-#    - deploy
+#- name: "Cleanup"
+#  hosts: manager-servers, worker-servers
+#  tasks:
+#    - name: "Prune containers, networks, volumes"
+#      community.docker.docker_prune:
+#        containers: true
+#        networks: true
+#        volumes: true
 
-- name: "Cleanup"
-  hosts: manager-servers, worker-servers
-  tasks:
-    - name: "Prune containers, networks, volumes"
-      community.docker.docker_prune:
-        containers: true
-        networks: true
-        volumes: true
