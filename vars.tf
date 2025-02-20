@@ -8,12 +8,12 @@ variable "image" {
 
 # VM related vars
 variable "number_of_workers" {
-  default = 6
+  default = 4
   description = "The number of how many worker servers do we need"
 }
 
 variable "number_of_managers" {
-  default = 3
+  default = 2
   description = "The number of how many manager servers do we need"
 }
 

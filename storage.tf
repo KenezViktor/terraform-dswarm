@@ -41,6 +41,11 @@ resource "libvirt_domain" "storage" {
 resource "terraform_data" "storage-up" {
   count = var.number_of_storages
 
+  # delete known_hosts.old
+  provisioner "local-exec" {
+   command = "rm -f ~/.ssh/known_hosts.old" 
+  }
+
   # deletes old hostkey
   provisioner "local-exec" {
     command = "ssh-keygen -f ~/.ssh/known_hosts -R ${join("", [var.storage_subdomain, count.index + 1, var.domain_name])}"

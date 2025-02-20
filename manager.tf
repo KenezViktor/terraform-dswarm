@@ -40,6 +40,11 @@ resource "libvirt_domain" "manager" {
 resource "terraform_data" "manager-up" {
   count = var.number_of_managers
 
+  # delete known_hosts.old
+  provisioner "local-exec" {
+   command = "rm -f ~/.ssh/known_hosts.old" 
+  }
+
   # deletes old hostkey
   provisioner "local-exec" {
     command = "ssh-keygen -f ~/.ssh/known_hosts -R ${join("", [var.manager_subdomain, count.index + 1, var.domain_name])}"

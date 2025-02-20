@@ -41,6 +41,11 @@ resource "libvirt_domain" "worker" {
 resource "terraform_data" "worker-up" {
   count = var.number_of_workers
 
+  # delete known_hosts.old
+  provisioner "local-exec" {
+   command = "rm -f ~/.ssh/known_hosts.old" 
+  }
+
   # deletes old hostkey
   provisioner "local-exec" {
     command = "ssh-keygen -f ~/.ssh/known_hosts -R ${join("", [var.worker_subdomain, count.index + 1, var.domain_name])}"
