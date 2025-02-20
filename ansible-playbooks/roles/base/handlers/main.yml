@@ -1,4 +1,10 @@
+---
 - name: "Start docker service"
   ansible.builtin.systemd:
     name: docker
     state: started
+
+- name: "Restart Docker"
+  ansible.builtin.systemd:
+    name: docker
+    state: restarted

@@ -1,0 +1,49 @@
+---
+- name: "Monitoring stack deployment"
+  tags:
+    - monitoring-stack
+  block:
+    - name: "Create monitoring stack dir"
+      ansible.builtin.file:
+        path: "/shared/stacks/cluster-monitoring"
+        owner: "root"
+        group: "root"
+        state: directory
+      when: inventory_hostname in groups['manager-servers'][0]
+
+    - name: "Create stack dirs"
+      ansible.builtin.file:
+        path: "/shared/stacks/cluster-monitoring/{{ item }}"
+        owner: "2000"
+        group: "2000"
+        mode: "0755"
+        state: directory
+      with_items:
+        - grafana/data
+        - prometheus/data
+        - prometheus/config
+      when: inventory_hostname in groups['manager-servers'][0]
+
+    - name: "Create compose file"
+      ansible.builtin.template:
+        src: "cluster-monitoring/cluster-monitoring.j2"
+        dest: "/shared/stacks/cluster-monitoring/docker-compose.yml"
+      when: inventory_hostname in groups['manager-servers'][0]
+
+    - name: "Template Prometheus config file"
+      ansible.builtin.template:
+        src: "cluster-monitoring/prometheus.yml.j2"
+        dest: "/shared/stacks/cluster-monitoring/prometheus/config/prometheus.yml"
+        owner: "2000"
+        group: "2000"
+        mode: "0644"
+      when: inventory_hostname in groups['manager-servers'][0]
+
+    - name: "Deploy stack"
+      community.docker.docker_stack:
+        name: cluster-monitoring
+        state: present
+        compose:
+          - "/shared/stacks/cluster-monitoring/docker-compose.yml"
+      when: inventory_hostname in groups['manager-servers'][0]
+      

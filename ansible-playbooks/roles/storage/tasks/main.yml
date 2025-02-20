@@ -14,19 +14,14 @@
     state: directory
   with_items: "{{ groups['worker-servers'] }}"
 
-- name: "Create storage dir for cert"
-  ansible.builtin.file:
-    path: "/storage/cert"
-    state: directory
-
 - name: "Install NFS server"
   ansible.builtin.apt:
     name: nfs-kernel-server
     state: present
 
 - name: "Config NFS server"
-  ansible.builtin.copy:
-    src: "files/nfs-config"
+  ansible.builtin.template:
+    src: "nfs-config.j2"
     dest: /etc/exports
     owner: root
     group: root

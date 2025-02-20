@@ -1,70 +1,18 @@
 ---
-- name: "Set hostname"
-  ansible.builtin.hostname:
-    name: "{{ inventory_hostname }}"
+- name: "Include Base tasks"
+  ansible.builtin.include_tasks:
+    file: base.yml
+  tags:
+    - base
 
-- name: "Install NFS common"
-  ansible.builtin.apt:
-    name: nfs-common
-    state: present
-
-- name: "Ensure shared dir exists"
-  ansible.builtin.file:
-    path: "/shared/"
-    state: directory
-    mode: "0755"
-
-- name: "Mount NFS Share for Managers"
-  ansible.posix.mount:
-    src: "{{ groups['storage-servers'][0] }}:/shared/"
-    path: "/shared/"
-    opts: rw
-    state: mounted
-    fstype: nfs
-  when: inventory_hostname in groups['manager-servers']
-
-- name: "Mount NFS Share for Workers"
-  ansible.posix.mount:
-    src: "{{ groups['storage-servers'][0] }}:/storage/{{ inventory_hostname }}"
-    path: "/storage"
-    opts: rw
-    state: mounted
-    fstype: nfs
-  when: inventory_hostname in groups['worker-servers']
-
-- name: "Mount NFS Share for Workers - cert"
-  ansible.posix.mount:
-    src: "{{ groups['storage-servers'][0] }}:/storage/cert"
-    path: "/storage/cert"
-    opts: rw
-    state: mounted
-    fstype: nfs
-  when: inventory_hostname in groups['worker-servers']
-
-- name: "Install curl"
-  ansible.builtin.apt:
-    name: curl
-    state: present
-
-- name: "Check if docker is installed"
-  ansible.builtin.stat:
-    path: "/usr/bin/docker"
-  register: result
-
-- name: "Get docker install script"
-  ansible.builtin.get_url:
-    url: 'https://get.docker.com/'
-    dest: "/tmp/get-docker.sh"
-    mode: "0744"
-  when: not result.stat.exists
-
-- name: "Run docker install script"
-  ansible.builtin.shell:
-    cmd: "/tmp/get-docker.sh"
-  when: not result.stat.exists
-  notify: "Start docker service"
-
-- name: "Install python3-docker"
-  ansible.builtin.apt:
-    name: python3-docker
-    state: present
+- name: "Include NFS tasks"
+  ansible.builtin.include_tasks:
+    file: nfs.yml
+  tags:
+    - nfs
+    
+- name: "Include Docker tasks"
+  ansible.builtin.include_tasks:
+    file: docker.yml
+  tags:
+    - docker

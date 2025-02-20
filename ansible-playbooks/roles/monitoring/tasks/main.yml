@@ -1,0 +1,12 @@
+---
+- name: "Include Prometheus tasks"
+  ansible.builtin.include_tasks:
+    file: prometheus.yml
+  tags:
+    - prometheus
+
+- name: "Deploy monitoring stack"
+  ansible.builtin.include_tasks:
+    file: stacks.yml
+  tags:
+    - monitoring-stack

@@ -1,0 +1,77 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  # NODE EXPORTER
+  - job_name: 'node exporter'
+    static_configs:
+      - targets: ['manager-1.office.lab:9100']
+        labels:
+          name: manager-1.office.lab
+      - targets: ['manager-2.office.lab:9100']
+        labels:
+          name: manager-2.office.lab
+      - targets: ['worker-1.office.lab:9100']
+        labels:
+          name: worker-1.office.lab
+      - targets: ['worker-2.office.lab:9100']
+        labels:
+          name: worker-2.office.lab
+      - targets: ['worker-3.office.lab:9100']
+        labels:
+          name: worker-3.office.lab
+      - targets: ['worker-4.office.lab:9100']
+        labels:
+          name: worker-4.office.lab
+      - targets: ['storage-1.office.lab:9100']
+        labels:
+          name: storage-1.office.lab
+  # DOCKER DAEMON METRICS
+  - job_name: 'docker daemon'
+    static_configs:
+      - targets: ['manager-1.office.lab:9323']
+        labels:
+          name: manager-1.office.lab
+      - targets: ['manager-2.office.lab:9323']
+        labels:
+          name: manager-2.office.lab
+      - targets: ['worker-1.office.lab:9323']
+        labels:
+          name: worker-1.office.lab
+      - targets: ['worker-2.office.lab:9323']
+        labels:
+          name: worker-2.office.lab
+      - targets: ['worker-3.office.lab:9323']
+        labels:
+          name: worker-3.office.lab
+      - targets: ['worker-4.office.lab:9323']
+        labels:
+          name: worker-4.office.lab
+      - targets: ['storage-1.office.lab:9323']
+        labels:
+          name: storage-1.office.lab
+  # CADVISOR --- Docker Swarm
+  - job_name: 'docker cadvisor'
+    static_configs:
+      - targets: ['manager-1.office.lab:8100']
+        labels:
+          name: manager-1.office.lab
+      - targets: ['manager-2.office.lab:8100']
+        labels:
+          name: manager-2.office.lab
+      - targets: ['worker-1.office.lab:8100']
+        labels:
+          name: worker-1.office.lab
+      - targets: ['worker-2.office.lab:8100']
+        labels:
+          name: worker-2.office.lab
+      - targets: ['worker-3.office.lab:8100']
+        labels:
+          name: worker-3.office.lab
+      - targets: ['worker-4.office.lab:8100']
+        labels:
+          name: worker-4.office.lab
+      - targets: ['storage-1.office.lab:8100']
+        labels:
+          name: storage-1.office.lab
+  

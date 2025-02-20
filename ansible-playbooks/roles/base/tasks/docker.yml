@@ -1,0 +1,37 @@
+---
+- name: "Docker tasks"
+  tags:
+    - docker
+  block:
+    - name: "Check if docker is installed"
+      ansible.builtin.stat:
+        path: "/usr/bin/docker"
+      register: result
+
+    - name: "Get docker install script"
+      ansible.builtin.get_url:
+        url: 'https://get.docker.com/'
+        dest: "/tmp/get-docker.sh"
+        mode: "0744"
+      when: not result.stat.exists
+
+    - name: "Run docker install script"
+      ansible.builtin.shell:
+        cmd: "/tmp/get-docker.sh"
+      when: not result.stat.exists
+      notify: "Start docker service"
+
+    - name: "Install python3-docker"
+      ansible.builtin.apt:
+        name: python3-docker
+        state: present
+
+    - name: "Enable docker daemon metrics"
+      ansible.builtin.copy:
+        src: "daemon.json"
+        dest: "/etc/docker/daemon.json"
+        owner: "root"
+        group: "root"
+        mode: "0644"
+      notify: "Restart Docker"
+        
