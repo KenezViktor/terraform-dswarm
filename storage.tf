@@ -12,6 +12,10 @@ resource "libvirt_domain" "storage" {
   memory = 2048
   vcpu = 2
 
+  cpu {
+    mode = "host-passthrough"
+  }
+
   network_interface {
     network_id = libvirt_network.swarm.id
     hostname = join("", [var.storage_subdomain, count.index + 1, var.domain_name])
