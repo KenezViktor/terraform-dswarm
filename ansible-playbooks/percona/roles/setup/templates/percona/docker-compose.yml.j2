@@ -22,8 +22,9 @@ services:
             - percona
         env_file: .env.percona
         volumes:
+            - /shared/stacks/percona/certs:/certs
             - /storage/stacks/percona/data:/var/lib/mysql:rw
-            - /storage/stacks/percona/config:/etc/percona-xtradb-cluster.d:ro
+            - /storage/stacks/percona/config:/etc/percona-xtradb-cluster.conf.d:ro
         deploy:
             mode: replicated
             replicas: 1

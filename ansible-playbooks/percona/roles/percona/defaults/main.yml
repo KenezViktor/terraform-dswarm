@@ -1,2 +1,3 @@
 ---
 percona_replica_number: 4
+percona_image: percona/percona-xtradb-cluster:8.0
