@@ -1,0 +1,7 @@
+---
+percona_image: percona/percona-xtradb-cluster:8.0
+etcd_image: quay.io/coreos/etcd:v3.5.0
+proxysql_image: "proxysql/proxysql:2.7.2-debian"
+mysql_password: asd123
+etcd_cluster_name: percona_etcd
+percona_cluster_name: percona_cluster

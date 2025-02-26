@@ -1,0 +1,17 @@
+---
+- name: "Percona deployment tasks"
+  tags:
+    - percona
+  block:
+    - name: "Deploy stack"
+      community.docker.docker_stack:
+        name: percona
+        state: present
+        compose:
+          - "/shared/stacks/percona/compose/docker-compose.yml"
+
+    - name: "Scale percona"
+      community.docker.docker_swarm_service:
+        name: percona
+        replicas: "{{ percona_replica_number }}"
+      when: percona_replica_number <= groups['worker-servers'] | length

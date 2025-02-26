@@ -1,0 +1,26 @@
+---
+- name: "Setup dirs"
+  hosts:
+    - storage-servers[0]
+    - manager-servers[0]
+  roles:
+    - setup
+
+- name: "Deploy Percona stack"
+  hosts:
+    - manager-servers[0]
+  roles:
+    - percona
+
+- name: "Cleanup"
+  hosts:
+    - manager-servers
+    - worker-servers
+  tasks:
+    - name: "Run docker system prune on all docker servers"
+      community.docker.docker_prune:
+        containers: true
+        networks: true
+        volumes: true
+  tags:
+    - always

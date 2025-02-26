@@ -1,0 +1,6 @@
+---
+- name: "Include Percona deployment tasks"
+  ansible.builtin.include_tasks:
+    file: percona.yml
+  tags:
+    - percona

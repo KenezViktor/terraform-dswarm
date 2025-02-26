@@ -1,0 +1,18 @@
+---
+- name: "Include percona tasks"
+  ansible.builtin.include_tasks:
+    file: percona.yml
+  tags:
+    - percona
+
+- name: "Include etcd tasks"
+  ansible.builtin.include_tasks:
+    file: etcd.yml
+  tags:
+    - etcd
+
+- name: "Include proxy tasks"
+  ansible.builtin.include_tasks:
+    file: proxysql.yml
+  tags:
+    - proxysql

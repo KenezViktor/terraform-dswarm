@@ -1,0 +1,68 @@
+version: '3.9'
+services:
+    {{ etcd_cluster_name }}:
+        image: {{ etcd_image }}
+        command: etcd
+        volumes:
+            - /usr/share/ca-certificates:/etc/ssl/certs:ro
+        env_file:
+            - .env.etcd
+        networks:
+            - percona
+        deploy:
+            mode: replicated
+            replicas: 1
+            placement:
+                constraints:
+                    - node.role == manager
+
+    {{ percona_cluster_name }}:
+        image: {{ percona_image }}
+        networks:
+            - percona
+        env_file: .env.percona
+        volumes:
+            - /storage/stacks/percona/data:/var/lib/mysql:rw
+            - /storage/stacks/percona/config:/etc/percona-xtradb-cluster.d:ro
+        deploy:
+            mode: replicated
+            replicas: 1
+            placement:
+                max_replicas_per_node: 1
+                constraints:
+                    - node.role == worker
+        cap_add:
+            - SYS_NICE
+        depends_on:
+            - percona_etcd
+
+    percona-proxysql:
+        image: {{ proxysql_image }}
+        networks:
+            - percona
+            - front
+        ports:
+            - "3306:3306"
+            - "6032:6032"
+        env_file: .env.proxysql
+        deploy:
+            mode: replicated
+            replicas: 1
+            placement:
+                max_replicas_per_node: 1
+                constraints:
+                    - node.role == manager
+        depends_on:
+            - percona-cluster
+
+networks:
+    front:
+        driver: overlay
+    percona:
+        driver: overlay
+        internal: true
+        attachable: true
+        ipam:
+            driver: default
+            config:
+                - subnet: 10.20.1.0/24
