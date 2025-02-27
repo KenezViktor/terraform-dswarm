@@ -5,3 +5,7 @@ proxysql_image: "proxysql/proxysql:2.7.2-debian"
 mysql_password: asd123
 etcd_cluster_name: percona_etcd
 percona_cluster_name: percona_cluster
+mysql_root_user: "root"
+mysql_root_password: "root"
+mysql_proxy_user: "proxy"
+mysql_proxy_password: "proxy"

@@ -3,13 +3,29 @@
   tags:
     - percona
   block:
+    - name: "Check if percona stack does not exist"
+      ansible.builtin.shell:
+        cmd: "docker stack ls | awk '{print $1}' | grep -i percona || true"
+      register: percona
+
     - name: "Deploy stack"
       community.docker.docker_stack:
         name: percona
         state: present
         compose:
           - "/shared/stacks/percona/compose/docker-compose.yml"
+      when: percona.stdout | length <= 0
+
+    # this is important
+    # without this, after stack deployment
+    # Ansible will scale Percona wihtout waiting for it to be fully ready
+    # causing a mess
+    - name: "Wait for first node to be fully read"
+      ansible.builtin.command:
+        cmd: "sleep 30"
+      when: percona.stdout | length <= 0
 
     - name: "Scale percona cluster"
       ansible.builtin.command: 
         cmd: "docker service scale percona_{{ percona_cluster_name }}={{ percona_replicas }}"
+      when: percona.stdout | length <= 0

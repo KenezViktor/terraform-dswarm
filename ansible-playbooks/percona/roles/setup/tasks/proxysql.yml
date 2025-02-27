@@ -5,7 +5,7 @@
   block:
     - name: "Create script dir for ProxySQL"
       ansible.builtin.file:
-        path: "/shared/stacks/percona/proxysql/script/"
+        path: "/shared/stacks/percona/proxysql/config/"
         owner: "root"
         group: "root"
         mode: "0755"
@@ -21,9 +21,10 @@
 
     - name: "Copy proxysql .env config"
       ansible.builtin.template:
-        src: "proxysql/add_cluster_nodes.sh.j2"
-        dest: "/shared/stacks/percona/proxysql/script/add_cluster_nodes.sh"
+        src: "proxysql/proxysql.cnf.j2"
+        dest: "/shared/stacks/percona/proxysql/config/proxysql.cnf"
         owner: "root"
         group: "root"
-        mode: "0777"
+        mode: "0644"
+
   when: inventory_hostname in groups['manager-servers'][0]

@@ -48,6 +48,8 @@ services:
             - "3306:3306"
             - "6032:6032"
         env_file: .env.proxysql
+        volumes:
+            - /shared/stacks/percona/proxysql/config/proxysql.cnf:/etc/proxysql.cnf:ro
         deploy:
             mode: replicated
             replicas: 1

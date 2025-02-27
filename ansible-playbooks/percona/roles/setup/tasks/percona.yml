@@ -48,6 +48,16 @@
         mode: "0644"
       with_items:
         - "{{ groups['worker-servers'] }}"
+
+    - name: "Copy init.sql"
+      ansible.builtin.copy:
+        src: "percona/init.sql"
+        dest: "/storage/{{ item }}/stacks/percona/config/init.sql"
+        owner: "1001"
+        group: "1001"
+        mode: "0644"
+      with_items:
+        - "{{ groups['worker-servers'] }}"
   when: inventory_hostname in groups['storage-servers'][0]
 
 - name: "Create certs if percona cluster does not exists"
@@ -99,7 +109,7 @@
         group: "root"
         mode: "0644"
 
-    - name: "Copy .env config"
+    - name: "Copy docker-compose"
       ansible.builtin.template:
         src: "percona/docker-compose.yml.j2"
         dest: "/shared/stacks/percona/compose/docker-compose.yml"
