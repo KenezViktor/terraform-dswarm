@@ -125,3 +125,12 @@ cAdvisor<br>
 
 HAProxy<br>
 Keepalived<br>
+
+### Bonus: Percona
+
+Percona<br>
+ProxySQL<br>
+Etcd for service discovery<br>
+
+TODO: Percona service is not read yet, the following must be solved:<br>
+    - Setup ProxySQL via config file

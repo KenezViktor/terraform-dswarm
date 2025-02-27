@@ -9,3 +9,7 @@
         state: present
         compose:
           - "/shared/stacks/percona/compose/docker-compose.yml"
+
+    - name: "Scale percona cluster"
+      ansible.builtin.command: 
+        cmd: "docker service scale percona_{{ percona_cluster_name }}={{ percona_replicas }}"

@@ -3,6 +3,14 @@
   tags:
     - etcd
   block:
+    - name: "Create script dir for ProxySQL"
+      ansible.builtin.file:
+        path: "/shared/stacks/percona/proxysql/script/"
+        owner: "root"
+        group: "root"
+        mode: "0755"
+        state: directory
+
     - name: "Copy proxysql .env config"
       ansible.builtin.template:
         src: "proxysql/.env.j2"
@@ -10,4 +18,12 @@
         owner: "root"
         group: "root"
         mode: "0644"
+
+    - name: "Copy proxysql .env config"
+      ansible.builtin.template:
+        src: "proxysql/add_cluster_nodes.sh.j2"
+        dest: "/shared/stacks/percona/proxysql/script/add_cluster_nodes.sh"
+        owner: "root"
+        group: "root"
+        mode: "0777"
   when: inventory_hostname in groups['manager-servers'][0]

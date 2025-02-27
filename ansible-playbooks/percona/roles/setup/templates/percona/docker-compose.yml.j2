@@ -18,6 +18,8 @@ services:
 
     {{ percona_cluster_name }}:
         image: {{ percona_image }}
+        hostname: {% raw %}"{{.Service.Name}}.{{.Task.Slot}}"
+{% endraw %}
         networks:
             - percona
         env_file: .env.percona

@@ -1,3 +1,4 @@
 ---
-percona_replica_number: 4
+percona_replicas: "{{ groups['worker-servers'] | length }}"
 percona_image: percona/percona-xtradb-cluster:8.0
+percona_cluster_name: percona_cluster
