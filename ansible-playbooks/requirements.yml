@@ -1,0 +1,9 @@
+collections:
+  # community.docker
+  - name: community.docker
+
+  # community.general
+  - name: community.general
+
+  # terraform
+  - name: cloud.terraform
