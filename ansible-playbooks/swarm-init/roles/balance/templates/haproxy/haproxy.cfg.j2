@@ -1,0 +1,37 @@
+global
+    log     	 fd@2 local2
+    chroot  	 /var/lib/haproxy
+    pidfile 	 /var/run/haproxy.pid
+    maxconn 	 4000
+    user    	 haproxy
+    group   	 haproxy
+    stats socket /var/lib/haproxy/stats expose-fd listeners
+    master-worker
+
+resolvers docker
+    nameserver dns1 127.0.0.11:53
+    resolve_retries 3
+    timeout resolve 1s
+    timeout retry   1s
+    hold other      10s
+    hold refused    10s
+    hold nx         10s
+    hold timeout    10s
+    hold valid      10s
+    hold obsolete   10s
+
+defaults
+    timeout connect 10s
+    timeout client 30s
+    timeout server 30s
+    log global
+    mode http
+    option httplog
+
+frontend http
+    bind *:80
+    use_backend grafana if { req.hdr(host) -i grafana.office.lab }
+
+backend grafana
+    balance roundrobin
+    server-template grafana- 1 grafana:3000 check resolvers docker init-addr libc,none

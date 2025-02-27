@@ -24,6 +24,12 @@
   roles:
     - monitoring
 
+- name: "Run balance role"
+  hosts: 
+    - manager-servers
+  roles:
+    - balance
+
 - name: "Cleanup"
   hosts: manager-servers, worker-servers
   tasks:
