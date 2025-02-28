@@ -1,0 +1,6 @@
+---
+- name: "Run balance role"
+  hosts: 
+    - manager-servers
+  roles:
+    - balance

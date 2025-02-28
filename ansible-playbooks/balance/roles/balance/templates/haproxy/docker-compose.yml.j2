@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+    haproxy:
+        image: {{ haproxy_image }}
+        ports:
+            - published: 80
+              target: 80
+              protocol: tcp
+              mode: ingress
+            - published: 443
+              target: 443
+              protocol: tcp
+              mode: ingress
+        networks:
+        {% for i in haproxy %}
+            - {{ i['name'] }}
+        {% endfor %}
+        volumes:
+            - /shared/stacks/haproxy/config/haproxy.cfg:/etc/haproxy/haproxy.cfg:ro
+        dns:
+            - 127.0.0.11
+        deploy:
+            mode: replicated
+            replicas: 1
+            placement:
+                constraints:
+                    - node.role == manager
+
+networks:
+    {% for i in haproxy %}
+    {{ i.network }}:
+        name: {{ i.stack }}_{{ i.name }}
+        external: true
+    {% endfor %}

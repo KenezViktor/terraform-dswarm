@@ -1,0 +1,19 @@
+---
+- name: "Keepalived tasks"
+  tags:
+    - keepalived
+  block:
+    - name: "Install keepalived"
+      ansible.builtin.apt:
+        name:
+          - keepalived
+        state: present
+
+    - name: "Copy keepalive config"
+      ansible.builtin.template:
+        src: "keepalived/keepalived.conf.j2"
+        dest: "/etc/keepalived/keepalived.conf"
+        owner: "root"
+        group: "root"
+        mode: "0644"
+      notify: "Restart keepalived"

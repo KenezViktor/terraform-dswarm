@@ -1,0 +1,9 @@
+---
+vrrp_ip: 192.168.150.100/32
+haproxy_image: haproxytech/haproxy-debian:2.0
+
+haproxy:
+  - network: "monitoring"
+    stack: "cluster-monitoring"
+#  - network: "vault"
+#    stack: "vault"

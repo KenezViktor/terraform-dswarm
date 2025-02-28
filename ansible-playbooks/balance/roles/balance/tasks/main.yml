@@ -1,0 +1,19 @@
+---
+- name: "Include keepalived tasks"
+  ansible.builtin.include_tasks:
+    file: keepalived.yml
+  tags:
+    - keepalived
+
+- name: "Include haproxy tasks"
+  ansible.builtin.include_tasks:
+    file: haproxy.yml
+  tags:
+    - haproxy
+  when: inventory_hostname in groups['manager-servers'][0]
+
+#- name: "Include firewalld tasks"
+#  ansible.builtin.include_tasks:
+#    file: firewalld.yml
+#  tags:
+#    - firewalld
