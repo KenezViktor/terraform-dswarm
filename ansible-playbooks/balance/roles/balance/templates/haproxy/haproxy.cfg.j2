@@ -37,5 +37,5 @@ frontend http
 {% for i in range(haproxy['services'] | length) %}
 backend {{ haproxy['services'][i]['name'] }}
     balance roundrobin
-    server-template {{ haproxy['services'][i]['name'] }}- 1  {{ haproxy['services'][i]['name'] }}:{{ haproxy['services'][0]['port'] }} check resolvers docker init-addr libc,none
+    server-template {{ haproxy['services'][i]['name'] }}- 1  {{ haproxy['services'][i]['name'] }}:{{ haproxy['services'][i]['port'] }} check resolvers docker init-addr libc,none
 {% endfor %}
