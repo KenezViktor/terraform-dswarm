@@ -30,13 +30,12 @@ defaults
 
 frontend http
     bind *:80
-    use_backend grafana if { req.hdr(host) -i grafana.office.lab }
-    use_backend vault if { req.hdr(host) -i vault.office.lab }
+    {% for i in range(haproxy['services'] | length) %}
+    use_backend {{ haproxy['services'][i]['name'] }} if { req.hdr(host) -i {{ haproxy['services'][i]['domain'] }} }
+    {% endfor %}
 
-backend grafana
+{% for i in range(haproxy['services'] | length) %}
+backend {{ haproxy['services'][i]['name'] }}
     balance roundrobin
-    server-template grafana- 1 grafana:3000 check resolvers docker init-addr libc,none
-
-backend vault
-    balance roundrobin
-    server-template vault- 1 vault:8200 check resolvers docker init-addr libc,none
+    server-template {{ haproxy['services'][i]['name'] }}- 1  {{ haproxy['services'][i]['name'] }}:{{ haproxy['services'][0]['port'] }} check resolvers docker init-addr libc,none
+{% endfor %}

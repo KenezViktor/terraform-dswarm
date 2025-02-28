@@ -12,13 +12,14 @@ services:
               protocol: tcp
               mode: ingress
         networks:
-        {% for i in haproxy %}
-            - {{ i['name'] }}
-        {% endfor %}
+        {% for i in range(haproxy.networks | length) -%}
+            - {{ haproxy.networks[i]['network'] }}
+        {% endfor -%}
         volumes:
             - /shared/stacks/haproxy/config/haproxy.cfg:/etc/haproxy/haproxy.cfg:ro
         dns:
             - 127.0.0.11
+            - 192.168.150.1
         deploy:
             mode: replicated
             replicas: 1
@@ -27,8 +28,8 @@ services:
                     - node.role == manager
 
 networks:
-    {% for i in haproxy %}
-    {{ i.network }}:
-        name: {{ i.stack }}_{{ i.name }}
+    {% for i in range(haproxy.networks | length) -%}
+    {{ haproxy.networks[i]['network'] }}:
+        name: {{ haproxy.networks[i]['stack'] }}_{{ haproxy.networks[i]['network'] }}
         external: true
     {% endfor %}

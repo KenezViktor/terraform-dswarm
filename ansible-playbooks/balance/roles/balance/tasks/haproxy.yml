@@ -21,6 +21,7 @@
         owner: "root"
         group: "root"
         mode: "0644"
+      notify: "Reload HAProxy"
 
     - name: "Copy docker-compose file"
       ansible.builtin.template:
@@ -29,10 +30,4 @@
         owner: "root"
         group: "root"
         mode: "0644"
-
-    - name: "Deploy haproxy stack"
-      community.docker.docker_stack:
-        name: haproxy
-        state: present
-        compose:
-          - "/shared/stacks/haproxy/compose/docker-compose.yml"
+      notify: "Deploy HAProxy"

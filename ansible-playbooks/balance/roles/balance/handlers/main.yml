@@ -3,3 +3,14 @@
   ansible.builtin.systemd:
     name: keepalived
     state: restarted
+
+- name: "Reload HAProxy"
+  ansible.builtin.command:
+    cmd: "docker service update --force haproxy_haproxy"
+
+- name: "Deploy HAProxy"
+  community.docker.docker_stack:
+    name: haproxy
+    state: present
+    compose:
+      - "/shared/stacks/haproxy/compose/docker-compose.yml"

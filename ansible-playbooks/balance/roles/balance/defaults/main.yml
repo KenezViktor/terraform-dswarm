@@ -3,7 +3,15 @@ vrrp_ip: 192.168.150.100/32
 haproxy_image: haproxytech/haproxy-debian:2.0
 
 haproxy:
-  - network: "monitoring"
-    stack: "cluster-monitoring"
-#  - network: "vault"
-#    stack: "vault"
+  networks:
+    - network: "monitoring"
+      stack: "cluster-monitoring"
+    - network: "vault"
+      stack: "vault"
+  services:
+    - name: grafana
+      port: 3000
+      domain: "grafana.office.lab"
+    - name: vault
+      port: 8200
+      domain: "vault.office.lab"
