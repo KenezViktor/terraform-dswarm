@@ -1,0 +1,17 @@
+---
+- name: "Label tasks"
+  tags:
+    - swarm
+    - label
+    - manager
+  block:
+    - name: "Add app tag"
+      community.docker.docker_node:
+        hostname: "{{ item }}"
+        labels:
+          vault: "deploy"
+      with_items:
+        - "worker-1.office.lab"
+        - "worker-2.office.lab"
+        - "worker-3.office.lab"
+  when: inventory_hostname not in groups['manager-servers'][0]

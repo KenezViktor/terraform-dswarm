@@ -3,25 +3,40 @@
   hosts: storage-servers
   roles:
     - storage
+  tags:
+    - swarm
 
 - name: "Install basic softwares, tools and dependencies"
   hosts: manager-servers, worker-servers
   roles:
     - base
+  tags:
+    - swarm
 
 - name: "Join managers to cluster"
   hosts: manager-servers
   roles:
     - managers
+  tags:
+    - swarm
+    - setup
+    - label
+    - manager
 
 - name: "Join workers to cluster"
   hosts: worker-servers
   roles:
     - workers
+  tags:
+    - swarm
+    - worker
 
 - name: "Deploy monitoring stack"
   hosts: all
   roles:
+    - monitoring
+  tags:
+    - swarm
     - monitoring
 
 - name: "Cleanup"
@@ -32,3 +47,6 @@
         containers: true
         networks: true
         volumes: true
+  tags:
+    - swarm
+    - cleanup
