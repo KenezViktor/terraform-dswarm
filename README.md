@@ -60,6 +60,15 @@ cd ..
 
 The script init and build the packer project then copies the OS image to libvirt's env and deletes the output dir to allow re-run.
 
+3) Create disk for storage VM
+
+Storage VM uses another disk for NFS. Create it with:
+
+```
+qemu-img create -f qcow2 empty.qcow2 <size_in_g>
+sudo mv empty.qcow2 /var/lib/libvirt/images/.
+```
+
 ### Create VMs
 
 1) Edit ```/etc/hosts```
