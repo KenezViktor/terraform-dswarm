@@ -6,6 +6,14 @@ resource "libvirt_volume" "storage-qcow2" {
   format = "qcow2"
 }
 
+resource "libvirt_volume" "nfs-storage" {
+  count = var.number_of_storages
+  name = "nfs-storage-${count.index + 1}.qcow2"
+  pool = "default"
+  source = "/var/lib/libvirt/images/empty.qcow2"
+  format = "qcow2"
+}
+
 resource "libvirt_domain" "storage" {
   count = var.number_of_storages
   name = join("", [var.storage_subdomain, count.index + 1, var.domain_name])
@@ -24,6 +32,10 @@ resource "libvirt_domain" "storage" {
 
   disk {
     volume_id = "${libvirt_volume.storage-qcow2[count.index].id}"
+  }
+
+  disk {
+    volume_id = "${libvirt_volume.nfs-storage[count.index].id}"
   }
 
   console {
