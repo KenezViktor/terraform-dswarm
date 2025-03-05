@@ -132,3 +132,10 @@ Percona<br>
 ProxySQL<br>
 Etcd for service discovery<br>
 
+
+## TODO
+
+Use firewalld, only allow port 22<br>
+Use fail2ban to defend port 22 with firewalld<br>
+Make sure services only reachable via Keepalived and HAProxy<br>
+
