@@ -6,12 +6,19 @@ haproxy:
   networks:
     - network: "monitoring"
       stack: "cluster-monitoring"
-    - network: "vault"
-      stack: "vault"
+    - network: "proxysql"
+      stack: "percona"
+#    - network: "vault"
+#      stack: "vault"
   services:
-    - name: grafana
-      port: 3000
-      domain: "grafana.office.lab"
-    - name: vault
-      port: 8200
-      domain: "vault.office.lab"
+    http:
+      - name: grafana
+        port: 3000
+        domain: "grafana.office.lab"
+    tcp:
+      - name: percona-proxysql
+        port: 3306
+        domain: "proxysql.office.lab"
+#    - name: vault
+#      port: 8200
+#      domain: "vault.office.lab"

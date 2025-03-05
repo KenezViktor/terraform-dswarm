@@ -3,6 +3,11 @@
   tags:
     - haproxy
   block:
+    - name: "Check if haproxy stack exists"
+      ansible.builtin.shell:
+        cmd: "docker stack ls | awk '{print $1}' | grep -i haproxy || true"
+      register: output
+
     - name: "Create dirs"
       ansible.builtin.file:
         path: "/shared/stacks/{{ item }}"

@@ -30,12 +30,28 @@ defaults
 
 frontend http
     bind *:80
-    {% for i in range(haproxy['services'] | length) %}
-    use_backend {{ haproxy['services'][i]['name'] }} if { req.hdr(host) -i {{ haproxy['services'][i]['domain'] }} }
+    {% for i in range(haproxy['services']['http'] | length) %}
+    use_backend {{ haproxy['services']['http'][i]['name'] }} if { req.hdr(host) -i {{ haproxy['services']['http'][i]['domain'] }} }
     {% endfor %}
 
-{% for i in range(haproxy['services'] | length) %}
-backend {{ haproxy['services'][i]['name'] }}
+frontend sql
+    bind *:3306
+    mode tcp
+    option tcplog
+    {% for i in range(haproxy['services']['tcp'] | length) %}
+    default_backend {{ haproxy['services']['tcp'][i]['name'] }}
+    {% endfor %}
+
+{% for i in range(haproxy['services']['http'] | length) %}
+backend {{ haproxy['services']['http'][i]['name'] }}
     balance roundrobin
-    server-template {{ haproxy['services'][i]['name'] }}- 1  {{ haproxy['services'][i]['name'] }}:{{ haproxy['services'][i]['port'] }} check resolvers docker init-addr libc,none
+    server-template {{ haproxy['services']['http'][i]['name'] }}- 1  {{ haproxy['services']['http'][i]['name'] }}:{{ haproxy['services']['http'][i]['port'] }} check resolvers docker init-addr libc,none
+{% endfor %}
+
+{% for i in range(haproxy['services']['tcp'] | length) %}
+backend {{ haproxy['services']['tcp'][i]['name'] }}
+    mode tcp
+    option tcpka
+    balance source
+    server {{ haproxy['services']['tcp'][i]['name'] }} {{ haproxy['services']['tcp'][i]['name'] }}:{{ haproxy['services']['tcp'][i]['port'] }} check resolvers docker init-addr libc,none
 {% endfor %}

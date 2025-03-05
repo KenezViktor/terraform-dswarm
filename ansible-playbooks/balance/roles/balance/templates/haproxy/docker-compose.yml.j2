@@ -11,6 +11,10 @@ services:
               target: 443
               protocol: tcp
               mode: ingress
+            - published: 3306
+              target: 3306
+              protocol: tcp
+              mode: ingress
         networks:
         {% for i in range(haproxy.networks | length) -%}
             - {{ haproxy.networks[i]['network'] }}

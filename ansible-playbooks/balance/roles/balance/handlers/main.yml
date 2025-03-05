@@ -7,6 +7,7 @@
 - name: "Reload HAProxy"
   ansible.builtin.command:
     cmd: "docker service update --force haproxy_haproxy"
+  when: output.stdout | length > 0
 
 - name: "Deploy HAProxy"
   community.docker.docker_stack:
