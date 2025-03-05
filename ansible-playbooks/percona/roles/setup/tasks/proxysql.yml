@@ -11,6 +11,14 @@
         mode: "0755"
         state: directory
 
+    - name: "Create sql dir for ProxySQL"
+      ansible.builtin.file:
+        path: "/shared/stacks/percona/proxysql/sql/"
+        owner: "root"
+        group: "root"
+        mode: "0755"
+        state: directory
+
     - name: "Copy proxysql .env config"
       ansible.builtin.template:
         src: "proxysql/.env.j2"
@@ -19,7 +27,7 @@
         group: "root"
         mode: "0644"
 
-    - name: "Copy proxysql .env config"
+    - name: "Copy proxysql config file"
       ansible.builtin.template:
         src: "proxysql/proxysql.cnf.j2"
         dest: "/shared/stacks/percona/proxysql/config/proxysql.cnf"

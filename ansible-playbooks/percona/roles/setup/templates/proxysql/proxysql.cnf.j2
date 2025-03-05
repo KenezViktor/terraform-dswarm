@@ -31,17 +31,25 @@ mysql_variables=
     monitor_password="monitor"
 }
 
-mysql_replication_hostgroups =
+mysql_galera_hostgroups =
 (
-    { writer_hostgroup=10 , reader_hostgroup=20 , comment="host groups" }
+    { 
+        writer_hostgroup=10,
+        reader_hostgroup=20,
+        backup_writer_hostgroup=30,
+        offline_hostgroup=999,
+        max_writes=1,
+        write_is_also_reader=2
+        comment="Host Groups for Read/Write Split"
+    }
 )
 
 mysql_servers =
 (
-    { address="percona_percona_cluster.1" , port=3306 , hostgroup=10, max_connections=100 , max_replication_lag = 5 },
-    { address="percona_percona_cluster.2" , port=3306 , hostgroup=20, max_connections=100 , max_replication_lag = 5 },
-    { address="percona_percona_cluster.3" , port=3306 , hostgroup=20, max_connections=100 , max_replication_lag = 5 },
-    { address="percona_percona_cluster.4" , port=3306 , hostgroup=20, max_connections=100 , max_replication_lag = 5 }
+    { address="percona_percona_cluster.1" , port=3306 , hostgroup=10, max_connections=100 , max_replication_lag=5 },
+    { address="percona_percona_cluster.2" , port=3306 , hostgroup=30, max_connections=100 , max_replication_lag=5 },
+    { address="percona_percona_cluster.3" , port=3306 , hostgroup=30, max_connections=100 , max_replication_lag=5 },
+    { address="percona_percona_cluster.4" , port=3306 , hostgroup=30, max_connections=100 , max_replication_lag=5 }
 )
 
 mysql_query_rules =
@@ -49,19 +57,12 @@ mysql_query_rules =
     {
         rule_id=100
         active=1
-        match_pattern="^SELECT .* FOR UPDATE"
-        destination_hostgroup=10
+        match_pattern="^SELECT .*"
+        destination_hostgroup=30
         apply=1
     },
     {
         rule_id=200
-        active=1
-        match_pattern="^SELECT .*"
-        destination_hostgroup=20
-        apply=1
-    },
-    {
-        rule_id=300
         active=1
         match_pattern=".*"
         destination_hostgroup=10
@@ -71,6 +72,6 @@ mysql_query_rules =
 
 mysql_users =
 (
-    { username = "{{ mysql_root_user }}" , password = "{{ mysql_root_password }}" , default_hostgroup = 10 , active = 1 },
-    { username = "{{ mysql_proxy_user }}" , password = "{{ mysql_proxy_password }}" , default_hostgroup = 10 , active = 1 }
+    { username="{{ mysql_root_user }}" , password="{{ mysql_root_password }}" , default_hostgroup=10 , active=1 },
+    { username="{{ mysql_proxy_user }}" , password="{{ mysql_proxy_password }}" , default_hostgroup=10 , active=1 }
 )

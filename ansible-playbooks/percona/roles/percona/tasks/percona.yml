@@ -18,7 +18,7 @@
 
     # this is important
     # without this, after stack deployment
-    # Ansible will scale Percona wihtout waiting for it to be fully ready
+    # Ansible will scale Percona without waiting for it to be fully ready
     # causing a mess
     - name: "Wait for first node to be fully read"
       ansible.builtin.command:

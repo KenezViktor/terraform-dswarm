@@ -2,6 +2,8 @@
 ssl-ca = /certs/ca.pem
 ssl-cert = /certs/server-cert.pem
 ssl-key = /certs/server-key.pem
+pxc_strict_mode="PERMISSIVE"
+wsrep_replicate_myisam="ON"
 
 [client]
 ssl-ca = /certs/ca.pem

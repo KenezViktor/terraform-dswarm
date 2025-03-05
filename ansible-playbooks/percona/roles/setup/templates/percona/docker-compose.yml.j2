@@ -27,6 +27,7 @@ services:
             - /shared/stacks/percona/certs:/certs
             - /storage/stacks/percona/data:/var/lib/mysql:rw
             - /storage/stacks/percona/config:/etc/percona-xtradb-cluster.conf.d:ro
+            - /storage/stacks/percona/sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
         deploy:
             mode: replicated
             replicas: 1
@@ -43,10 +44,7 @@ services:
         image: {{ proxysql_image }}
         networks:
             - percona
-            - front
-        ports:
-            - "3306:3306"
-            - "6032:6032"
+            - proxysql
         env_file: .env.proxysql
         volumes:
             - /shared/stacks/percona/proxysql/config/proxysql.cnf:/etc/proxysql.cnf:ro
@@ -61,8 +59,9 @@ services:
             - percona-cluster
 
 networks:
-    front:
+    proxysql:
         driver: overlay
+        attachable: true
     percona:
         driver: overlay
         internal: true
