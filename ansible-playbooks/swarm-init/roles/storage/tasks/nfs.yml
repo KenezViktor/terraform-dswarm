@@ -1,0 +1,23 @@
+---
+- name: ""
+  tags:
+    - swarm
+    - storage
+  block:
+    - name: "Set hostname"
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
+
+    - name: "Install NFS server"
+      ansible.builtin.apt:
+        name: nfs-kernel-server
+        state: present
+
+    - name: "Config NFS server"
+      ansible.builtin.template:
+        src: "nfs-config.j2"
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: '0644'
+      notify: "Restart NFS service"

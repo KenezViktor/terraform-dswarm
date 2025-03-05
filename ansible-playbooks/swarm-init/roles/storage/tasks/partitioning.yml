@@ -1,0 +1,68 @@
+---
+- name: "Partitioning"
+  tags:
+    - storage
+    - swarm
+  block:
+    - name: "Install parted"
+      ansible.builtin.apt:
+        name:
+          - parted
+        state: present
+
+    - name: "Create shared partition"
+      community.general.parted:
+        device: "/dev/vdb"
+        number: 1
+        state: present
+        part_end: 20%
+        fs_type: ext4
+
+    - name: "Create storage partition"
+      community.general.parted:
+        device: "/dev/vdb"
+        number: 2
+        state: present
+        part_start: 20%
+        part_end: 100%
+        fs_type: ext4
+
+    - name: "Create ext4 on shared"
+      community.general.filesystem:
+        fstype: ext4
+        dev: /dev/vdb1
+
+    - name: "Create ext4 on storage"
+      community.general.filesystem:
+        fstype: ext4
+        dev: /dev/vdb2
+
+    - name: "Create shared dir"
+      ansible.builtin.file:
+        path: "/shared/"
+        state: directory
+
+    - name: "Create storage dir"
+      ansible.builtin.file:
+        path: "/storage/"
+        state: directory
+
+    - name: "Mount vdb1 to /shared"
+      ansible.posix.mount:
+        src: "/dev/vdb1"
+        path: "/shared"
+        fstype: ext4
+        state: mounted
+
+    - name: "Mount vdb1 to /storage"
+      ansible.posix.mount:
+        src: "/dev/vdb2"
+        path: "/storage"
+        fstype: ext4
+        state: mounted
+
+    - name: "Create storage dir for worker servers"
+      ansible.builtin.file:
+        path: "/storage/{{ item }}"
+        state: directory
+      with_items: "{{ groups['worker-servers'] }}"

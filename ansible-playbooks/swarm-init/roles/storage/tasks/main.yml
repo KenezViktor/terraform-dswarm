@@ -1,29 +1,14 @@
 ---
-- name: "Set hostname"
-  ansible.builtin.hostname:
-    name: "{{ inventory_hostname }}"
+- name: "Include Partitioning tast"
+  ansible.builtin.include_tasks:
+    file: partitioning.yml
+  tags:
+    - swarm
+    - storage
 
-- name: "Create shared dir"
-  ansible.builtin.file:
-    path: "/shared/"
-    state: directory
-
-- name: "Create storage dir"
-  ansible.builtin.file:
-    path: "/storage/{{ item }}"
-    state: directory
-  with_items: "{{ groups['worker-servers'] }}"
-
-- name: "Install NFS server"
-  ansible.builtin.apt:
-    name: nfs-kernel-server
-    state: present
-
-- name: "Config NFS server"
-  ansible.builtin.template:
-    src: "nfs-config.j2"
-    dest: /etc/exports
-    owner: root
-    group: root
-    mode: '0644'
-  notify: "Restart NFS service"
+- name: "Include NFS tast"
+  ansible.builtin.include_tasks:
+    file: nfs.yml
+  tags:
+    - swarm
+    - storage

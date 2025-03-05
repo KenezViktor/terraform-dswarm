@@ -5,6 +5,7 @@
     - storage
   tags:
     - swarm
+    - storage
 
 - name: "Install basic softwares, tools and dependencies"
   hosts: manager-servers, worker-servers
